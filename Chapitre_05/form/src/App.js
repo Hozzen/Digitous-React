@@ -1,8 +1,30 @@
 import React from 'react';
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
 
 class App extends React.Component {
+  constructor() {
+    super()
+
+    this.state = {
+      email: "",
+      password: "",
+      classEmail: "form-control is-invalid",
+      classPassword: "form-control is-invalid"
+    }
+  }
+
+  onInputEmail = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      email: e.target.value,
+      classEmail: patternEmail.test(e.target.value) ? "form-control is-valid" : "form-control is-invalid"
+    }))
+  }
   render() {
     return(
       <div>
@@ -11,7 +33,7 @@ class App extends React.Component {
           <form>
             <div className="form-group">
               <label for="InputEmail" >Email address</label>
-              <input type="email" className={this.state.class.Email} id="InputEmail"></input>
+              <input type="email" className={this.state.classEmail} id="InputEmail"></input>
             </div>
             <div className="form-group">
               <label InputPassword>Password</label>
