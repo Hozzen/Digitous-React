@@ -1,53 +1,105 @@
-import React from 'react';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from "react";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
 
 class App extends React.Component {
   constructor() {
-    super()
+    super();
 
     this.state = {
       email: "",
       password: "",
-      classEmail: "form-control is-invalid",
-      classPassword: "form-control is-invalid"
-    }
+      isEmailValid: false,
+      isPasswordValid: false,
+      isFormSubmitted: false,
+    };
   }
 
-  onInputEmail = (e) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      email: e.target.value,
-      classEmail: patternEmail.test(e.target.value) ? "form-control is-valid" : "form-control is-invalid"
-    }))
-  }
+  onEmailChange = (e) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        email: e.target.value,
+        isEmailValid: emailPattern.test(e.target.value),
+      };
+    });
+  };
+
+  onPasswordChange = (e) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        password: e.target.value,
+        isPasswordValid: e.target.value.length > 5 /* Return a boolean */,
+      };
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (this.state.isEmailValid) {
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          isFormSubmitted: true,
+        };
+      });
+    }
+  };
   render() {
-    return(
+    return !this.state.isFormSubmitted ? (
       <div>
         <div className="container">
           <h1 className="text center p-3">Login</h1>
-          <form>
+          <form onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <label for="InputEmail" >Email address</label>
-              <input type="email" className={this.state.classEmail} id="InputEmail"></input>
+              <label for="InputEmail">Email address</label>
+              <input
+                type="email"
+                className={
+                  this.state.isEmailValid
+                    ? "form-control is-valid"
+                    : "form-control is-invalid"
+                }
+                id="InputEmail"
+                onChange={this.onEmailChange}
+              ></input>
             </div>
             <div className="form-group">
               <label InputPassword>Password</label>
-              <input type="password" className={this.state.classPassword} id="InputPassword" placeholder="Password"></input>
+              <input
+                type="password"
+                className={
+                  this.state.isPasswordValid
+                    ? "form-control is-valid"
+                    : "form-control is-invalid"
+                }
+                id="InputPassword"
+                onChange={this.onPasswordChange}
+                placeholder="Password"
+              ></input>
             </div>
             <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="Check"></input>
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="Check"
+              ></input>
               <label>Remember me</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">
+              Submit
+            </button>
           </form>
         </div>
       </div>
-    )
+    ) : (
+      <div>FORM SUBMITTED</div>
+    );
   }
 }
 
